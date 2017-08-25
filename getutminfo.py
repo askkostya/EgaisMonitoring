@@ -5,9 +5,10 @@ import datetime
 import requests
 import sys
 
-def deltadate(datestr):
+
+def deltadate(strData):
     now = datetime.datetime.now()
-    DateofEND = datetime.datetime.strptime(datestr, "%Y-%m-%d %H:%M:%S")
+    DateofEND = datetime.datetime.strptime(strData, "%Y-%m-%d %H:%M:%S")
     print((DateofEND - now).days)
     return
 
@@ -34,7 +35,9 @@ if sys.argv[1] == "rsavalid":
         print("Invalid")
 if sys.argv[1] == "rsadate":
     ipnumstr = r.text.rfind("PKI: FSRAR-RSA")
-    RSAdatestr = (r.text[ipnumstr + 72:ipnumstr + 91])
+    strRSA = (r.text[ipnumstr:ipnumstr + 101])
+    ipnumstr = strRSA.rfind("по")
+    RSAdatestr = (strRSA[ipnumstr + 3:ipnumstr + 22])
     deltadate(RSAdatestr)
 if sys.argv[1] == "gostdate":
     ipnumstr = r.text.rfind("ГОСТ:")
