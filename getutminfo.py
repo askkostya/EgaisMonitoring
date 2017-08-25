@@ -31,7 +31,7 @@ if sys.argv[1] == "rsavalid":
     ipnumstr = r.text.rfind("Проблемы с RSA:")
     if ipnumstr == -1:
         print("Valid")
-    else:
+    else: 
         print("Invalid")
 if sys.argv[1] == "rsadate":
     ipnumstr = r.text.rfind("PKI: FSRAR-RSA")
