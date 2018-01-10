@@ -12,44 +12,54 @@ def deltadate(strData):
     print((DateofEND - now).days)
     return
 
-try:
-    UTMURL = sys.argv[2]
-except BaseException:
-    UTMURL = "http://localhost:8080"
-
-try:
-    user_agent = {'User-Agent': 'Mozilla/5.0'}
-    r = requests.get(UTMURL, headers=user_agent)
-except requests.exceptions.RequestException:
+def getUTMUrl(getURL):
+    try:
+        user_agent = {'User-Agent': 'Mozilla/5.0'}
+        r = requests.get(getURL, headers=user_agent)
+        return (r.text)
+    except requests.exceptions.RequestException:
     # Timeout or ConnectionError
-    sys.exit()
+        sys.exit()
+
+if sys.argv[2]==None:
+    getURL = 'http://localhost:8080'
+else:
+    getURL = sys.argv[2]
 
 if sys.argv[1] == "version":
-    ipnumstr = r.text.rfind("<pre>version:")
-    print(r.text[ipnumstr + 13:ipnumstr + 20])
+    httptext = getUTMUrl(getURL+'/info/version')
+    print(httptext)
+
 if sys.argv[1] == "rsavalid":
-    ipnumstr = r.text.rfind("Проблемы с RSA:")
+    httptext = getUTMUrl(getURL)
+    ipnumstr = httptext.rfind("Проблемы с RSA:")
     if ipnumstr == -1:
         print("Valid")
-    else:  
+    else:
         print("Invalid")
+
 if sys.argv[1] == "rsadate":
-    ipnumstr = r.text.rfind("PKI: FSRAR-RSA")
-    strRSA = (r.text[ipnumstr:ipnumstr + 101])
+    httptext = getUTMUrl(getURL)
+    ipnumstr = httptext.rfind("Сертификат RSA")
+    strRSA = (httptext[ipnumstr+60:ipnumstr + 129])
     ipnumstr = strRSA.rfind("по")
     RSAdatestr = (strRSA[ipnumstr + 3:ipnumstr + 22])
     deltadate(RSAdatestr)
+
 if sys.argv[1] == "gostdate":
-    ipnumstr = r.text.rfind("ГОСТ:")
-    strGOST = (r.text[ipnumstr:ipnumstr + 101])
+    httptext = getUTMUrl(getURL)
+    ipnumstr = httptext.rfind("Сертификат ГОСТ")
+    strGOST = (httptext[ipnumstr:ipnumstr + 140])
     ipnumstr = strGOST.rfind("по")
     GOSTdatestr = (strGOST[ipnumstr + 3:ipnumstr + 22])
     deltadate(GOSTdatestr)
+
 if sys.argv[1] == "docsbuffer":
-    ipnumstr = r.text.rfind("Отсутствуют неотправленные розничные документы.")
+    httptext = getUTMUrl(getURL)
+    ipnumstr = httptext.rfind("Отсутствуют неотправленные чеки")
     if ipnumstr == -1:
-        ipnumstr = r.text.rfind("Дата самого старого неотправленного розничного документа:")
-        DateFirstDOCDstr = (r.text[ipnumstr + 69:ipnumstr + 88])
+        ipnumstr = httptext.rfind("Чеки не отправлялись с")
+        DateFirstDOCDstr = (httptext[ipnumstr+23:ipnumstr + 42])
         now = datetime.datetime.now()
         DateFirstDocEND = datetime.datetime.strptime(DateFirstDOCDstr, "%Y-%m-%d %H:%M:%S")
         print((now - DateFirstDocEND).seconds // 3600)
