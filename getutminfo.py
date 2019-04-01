@@ -9,8 +9,8 @@ import sys
 def deltadate(strData):
     now = datetime.datetime.now()
     DateofEND = datetime.datetime.strptime(strData, "%Y-%m-%d %H:%M:%S")
-    print((DateofEND - now).days)
-    return
+    deltaindays = (DateofEND - now).days
+    return deltaindays
 
 def getUTMUrl(getURL):
     try:
@@ -21,10 +21,10 @@ def getUTMUrl(getURL):
     # Timeout or ConnectionError
         sys.exit()
 
-if sys.argv[2]==None:
-    getURL = 'http://localhost:8080'
-else:
+try:
     getURL = sys.argv[2]
+except BaseException:
+    getURL = "http://localhost:8080"
 
 if sys.argv[1] == "version":
     httptext = getUTMUrl(getURL+'/info/version')
@@ -44,7 +44,7 @@ if sys.argv[1] == "rsadate":
     strRSA = (httptext[ipnumstr+60:ipnumstr + 129])
     ipnumstr = strRSA.rfind("по")
     RSAdatestr = (strRSA[ipnumstr + 3:ipnumstr + 22])
-    deltadate(RSAdatestr)
+    print(deltadate(RSAdatestr))
 
 if sys.argv[1] == "gostdate":
     httptext = getUTMUrl(getURL)
@@ -52,7 +52,7 @@ if sys.argv[1] == "gostdate":
     strGOST = (httptext[ipnumstr:ipnumstr + 140])
     ipnumstr = strGOST.rfind("по")
     GOSTdatestr = (strGOST[ipnumstr + 3:ipnumstr + 22])
-    deltadate(GOSTdatestr)
+    print(deltadate(GOSTdatestr))
 
 if sys.argv[1] == "docsbuffer":
     httptext = getUTMUrl(getURL)
@@ -62,6 +62,8 @@ if sys.argv[1] == "docsbuffer":
         DateFirstDOCDstr = (httptext[ipnumstr+23:ipnumstr + 42])
         now = datetime.datetime.now()
         DateFirstDocEND = datetime.datetime.strptime(DateFirstDOCDstr, "%Y-%m-%d %H:%M:%S")
-        print((now - DateFirstDocEND).seconds // 3600)
+        deltadays = (now - DateFirstDocEND).days*24
+        deltaseconds = (now - DateFirstDocEND).seconds//3600
+        print(deltadays+deltaseconds)
     else:
         print(0)
