@@ -9,7 +9,7 @@ import sys
 def deltadate(strData):
     now = datetime.datetime.now()
     DateofEND = datetime.datetime.strptime(strData, "%Y-%m-%d %H:%M:%S")
-    deltaindays=(DateofEND - now).days
+    deltaindays = (DateofEND - now).days
     return deltaindays
 
 def getUTMUrl(getURL):
