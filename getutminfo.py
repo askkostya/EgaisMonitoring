@@ -39,15 +39,15 @@ if sys.argv[1] == "rsavalid":
         print("Invalid")
 
 if sys.argv[1] == "rsadate":
-    httptext = getUTMUrl(getURL)
+    httptext = getUTMUrl(getURL+'/home')
     ipnumstr = httptext.rfind("Сертификат RSA")
-    strRSA = (httptext[ipnumstr+60:ipnumstr + 129])
+    strRSA = (httptext[ipnumstr+77:ipnumstr + 140])
     ipnumstr = strRSA.rfind("по")
     RSAdatestr = (strRSA[ipnumstr + 3:ipnumstr + 22])
     print(deltadate(RSAdatestr))
 
 if sys.argv[1] == "gostdate":
-    httptext = getUTMUrl(getURL)
+    httptext = getUTMUrl(getURL+'/home')
     ipnumstr = httptext.rfind("Сертификат ГОСТ")
     strGOST = (httptext[ipnumstr:ipnumstr + 140])
     ipnumstr = strGOST.rfind("по")
