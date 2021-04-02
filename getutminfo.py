@@ -55,7 +55,7 @@ if sys.argv[1] == "gostdate":
     print(deltadate(GOSTdatestr))
 
 if sys.argv[1] == "docsbuffer":
-    httptext = getUTMUrl(getURL)
+    httptext = getUTMUrl(getURL+'/home')
     ipnumstr = httptext.rfind("Отсутствуют неотправленные чеки")
     if ipnumstr == -1:
         ipnumstr = httptext.rfind("Чеки не отправлялись с")
